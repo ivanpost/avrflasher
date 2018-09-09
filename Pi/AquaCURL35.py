@@ -1,15 +1,16 @@
-# -*- coding: cp1251 -*-
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 import pycurl
 import io
 import time
 import os.path
 
-hostname = '192.168.31.12' # Переменная ip адрес
-hexfname = 'Blink1.hex'  # Пременная имя файла
+hostname = '192.168.31.12' # РџРµСЂРµРјРµРЅРЅР°СЏ ip Р°РґСЂРµСЃ
+hexfname = 'Blink1.hex'  # РџСЂРµРјРµРЅРЅР°СЏ РёРјСЏ С„Р°Р№Р»Р°
 
 url = 'http://' + hostname + '/pgm/sync'
 
-# POST запрос - сброс uC AQUARIUS
+# POST Р·Р°РїСЂРѕСЃ - СЃР±СЂРѕСЃ uC AQUARIUS
 print('Resetting Aquarius\n')
 b = io.BytesIO()
 c = pycurl.Curl()
@@ -22,18 +23,18 @@ c.perform()
 
 time.sleep(3)
 
-# GET запрос туда же - чтение результата
+# GET Р·Р°РїСЂРѕСЃ С‚СѓРґР° Р¶Рµ - С‡С‚РµРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 c.setopt(pycurl.POST, 0)
 c.perform()
 
-# Вывод результата
+# Р’С‹РІРѕРґ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 response_data = b.getvalue()
 c.close()
 print(response_data)
 
 url = 'http://' + hostname + '/pgm/upload'
 
-# POST запрос - загрузка файла
+# POST Р·Р°РїСЂРѕСЃ - Р·Р°РіСЂСѓР·РєР° С„Р°Р№Р»Р°
 print('\nUpload flash file in Aquarius\n')
 b = io.BytesIO()
 c = pycurl.Curl()
@@ -47,7 +48,7 @@ fin = open(hexfname, 'rb')
 c.setopt(pycurl.READFUNCTION, fin.read)
 c.perform()
 
-# Вывод результата
+# Р’С‹РІРѕРґ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 response_data = b.getvalue()
 b.close()
 c.close()
