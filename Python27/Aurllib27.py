@@ -6,83 +6,69 @@ import time
 import pycurl
 import StringIO
 import os.path
+import pyping
+import sys
 
-# hexfile = urllib2.urlopen("https://hi-garden.ru/images/Flash/Aqua73.hex")
+hostname = '192.168.31.12' # Переменная ip адрес
+hexfname = 'Blink2.hex'  # Пременная имя файла
 
-# output = open('Aqua73.hex','wb')
+r = pyping.ping(hostname)
+
+if r.ret_code == 0:
+    print "Ping " + hostname +" OK"
+    time.sleep(1)
+else:
+    print "Sorry uC not response"
+    sys.exit(0)
+
+# hexfile = urllib2.urlopen("https://hi-garden.ru/images/Flash/" + hexfname)
+# output = open(hexfname,'wb')
 # output.write(hexfile.read())
 # output.close()
+
+url = 'http://' + hostname + '/pgm/sync'
 
 # Данные, которые хотим отправить
 query_args = { 'm':'10', 's':'', 'X':'' }
 
-# Производим urlencodes для ранее созданного словаря (вот для чего мы импортировали библиотеку urllib вверху)
+# Производим urlencodes для словаря
 data = urllib.urlencode(query_args)
 
 # Отправляем HTTP POST запрос
-request = urllib2.Request('http://192.168.31.12/pgm/sync', data)
+request = urllib2.Request(url, data)
+time.sleep(3)
 
-time.sleep(2)
-
-# Данные, которые хотим отправить
+# Аргументы запроса, которые хотим отправить
 query_args = { 'm':'10', 's':'' }
 
-# Производим urlencodes для ранее созданного словаря (вот для чего мы импортировали библиотеку urllib вверху)
+# Производим urlencodes для query_args
 data = urllib.urlencode(query_args)
 
 # Отправляем HTTP POST запрос
-request = urllib2.Request('http://192.168.31.12/pgm/sync', data)
-
+request = urllib2.Request(url, data)
 response = urllib2.urlopen(request)
-
 html = response.read()
 
 # Выводим результат
 print html
 
+url = 'http://' + hostname + '/pgm/upload'
 
-def main():
- 
-    method = 4
-    filename = 'Blink1.hex'
-    url = 'http://192.168.31.12/pgm/upload'
+c = pycurl.Curl()
+c.setopt(pycurl.URL, url)
+b = StringIO.StringIO()
+c.setopt(pycurl.WRITEFUNCTION, b.write)
+c.setopt(pycurl.POST, 1)
+filesize = os.path.getsize(hexfname)
+c.setopt(pycurl.POSTFIELDSIZE, filesize)
+fin = open(hexfname, 'rb')
+c.setopt(pycurl.READFUNCTION, fin.read)
+c.perform()
 
-    c = pycurl.Curl()
-    c.setopt(pycurl.VERBOSE, 1)
-    c.setopt(pycurl.URL, url)
-    fout = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, fout.write)
+response_code = c.getinfo(pycurl.RESPONSE_CODE)
+response_data = b.getvalue()
+c.close()
+b.close()
+print response_code
+print response_data
 
-    if method == 1:
-        c.setopt(pycurl.HTTPPOST, [
-                ("file1",
-                 (c.FORM_FILE, filename))])
-        c.setopt(pycurl.HTTPHEADER, [''])
-    elif method == 2:
-        c.setopt(c.HTTPPOST, [
-                ("uploadfieldname",
-                 (c.FORM_FILE, filename,
-                  c.FORM_CONTENTTYPE, ""))])
-    elif method == 3:
-        c.setopt(pycurl.UPLOAD, 1)
-        c.setopt(pycurl.READFUNCTION, open(filename, 'rb').read)
-        filesize = os.path.getsize(filename)
-        c.setopt(pycurl.INFILESIZE, filesize)
-    elif method == 4:
-        c.setopt(pycurl.POST, 1)
-        c.setopt(pycurl.HTTPHEADER, [''])
-        filesize = os.path.getsize(filename)
-        c.setopt(pycurl.POSTFIELDSIZE, filesize)
-        fin = open(filename, 'rb')
-        c.setopt(pycurl.READFUNCTION, fin.read)
-
-    c.perform()
-    response_code = c.getinfo(pycurl.RESPONSE_CODE)
-    response_data = fout.getvalue()
-    print response_code
-    print response_data
-    c.close()
-
-
-if __name__ == '__main__':
-    main()

@@ -4,9 +4,20 @@ import pycurl
 import StringIO
 import time
 import os.path
+import pyping
+import sys
 
 hostname = '192.168.31.12' # Переменная ip адрес
-hexfname = 'Blink1.hex'  # Пременная имя файла 
+hexfname = 'Blink2.hex'  # Пременная имя файла
+
+r = pyping.ping(hostname)
+
+if r.ret_code == 0:
+    print "Ping " + hostname +" OK"
+    time.sleep(1)
+else:
+    print "Sorry uC not response"
+    sys.exit(0)
 
 url = 'http://' + hostname + '/pgm/sync'
 
