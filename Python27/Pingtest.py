@@ -9,7 +9,7 @@ if hostname == '':
     print 'Hostname is not null, set default: ' + hostname
 else:
     print 'Start Ping'
-    
+
 r = pyping.ping(hostname)
 
 if r.ret_code == 0:
