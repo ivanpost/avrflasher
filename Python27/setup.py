@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python2
 from cx_Freeze import setup, Executable
 
 setup(

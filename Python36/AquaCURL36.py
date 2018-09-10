@@ -1,23 +1,29 @@
-#!/usr/bin/python3.6
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import pycurl
 import io
 import time
 import os.path
-#import pyping
-#import sys
+import telnetlib
+import sys
 
-hostname = '192.168.31.12' # Переменная ip адрес
-hexfname = 'Blink1.hex'  # Пременная имя файла 
+hostname = str(input("Input Hostnname: "))
 
-#r = pyping.ping(hostname)
+if hostname == '':
+    hostname = '192.168.31.12' # Переменная ip адрес
+    print('Hostname is not null, set default: ' + hostname)
 
-#if r.ret_code == 0:
-#    print("Ping " + hostname +" OK")
-#    time.sleep(1)
-#else:
-#    print("Sorry uC not response")
-#    sys.exit(0)
+hexfname = 'Blink1.hex'  # Пременная имя файла
+
+try:
+    tn = telnetlib.Telnet(hostname, 23, 3)
+except:
+    print('Error connect to ' + hostname)
+    sys.exit(0)
+tn.close()
+print('Connect to ' + hostname +' OK')
+tn.close()
+time.sleep(3)
 
 url = 'http://' + hostname + '/pgm/sync'
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python2
 # -*- coding: utf-8 -*-
 import urllib2
 import urllib
@@ -71,4 +71,3 @@ c.close()
 b.close()
 print response_code
 print response_data
-
