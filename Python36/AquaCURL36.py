@@ -13,7 +13,7 @@ if hostname == '':
     hostname = '192.168.31.12' # Переменная ip адрес
     print('Hostname is not null, set default: ' + hostname)
 
-hexfname = 'Blink1.hex'  # Пременная имя файла
+hexfname = 'Aqua73.hex'  # Пременная имя файла
 
 try:
     tn = telnetlib.Telnet(hostname, 23, 3)
