@@ -7,7 +7,7 @@ import os.path
 import telnetlib
 import sys
 
-hostname = str(input("Input Hostnname: "))
+hostname = str(input("Input Hostname: "))
 
 if hostname == '':
     hostname = '192.168.31.12' # Переменная ip адрес
